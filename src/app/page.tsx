@@ -109,7 +109,7 @@ export default function Inscribe() {
 
         <p>
         But what happens if someone attempts to cheat? For instance, 
-        what if someone modifies the inscription price or initial owner&#39;s address, 
+        what if someone modifies the inscription price or initial owner&#39;s address,
         or simply refuses to pay for the NFT?
         </p>
 
