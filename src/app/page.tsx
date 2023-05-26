@@ -412,8 +412,8 @@ export default function Inscribe() {
 
         <p>
           For public mint, you don&apos;t want to inscribe youself but{" "}
-          <strong>Download</strong>
-          the inscription file and share it with your community.
+          <strong>Download</strong>&nbsp; the inscription file and share it with
+          your community.
         </p>
 
         <p>
