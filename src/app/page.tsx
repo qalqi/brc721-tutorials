@@ -181,69 +181,62 @@ export default function Inscribe() {
 
       <section>
         <h2>Inscribing collection</h2>
-
         <p>
           As was mentioned above, the collection manifest serves as the single
           source of truth for the collection. Its immutable characteristic
           implies that once it&#39;s established, alterations are not possible.
         </p>
-
         <p>
           The image below shows that we have declared a collection with the OG
           name and symbol. We have specified my wallet as a payment address to
           receive token payments. In addition, we have set a maximum supply of
           10,000 tokens, with a limit of 5 tokens per address.
         </p>
-
+        <b>
+          We encourage you to choose unique name and symbol for your collection
+          to avoid duplicates.
+        </b>{" "}
         <p>
           You might notice that we&#39;ve intentionally left the max block
           height field vacant. This strategy is particularly beneficial for open
           edition collections, where a maximum supply isn&#39;t defined but a
           time constraint is in place.
         </p>
-
         <p>
           The <strong>Signer Public Key</strong> field was populated
           automatically because we generated keys beforehand.
         </p>
-
         <img
           alt="collection manifest"
           src="/images/collection-manifest.png"
           className="p-6 my-8 border"
         />
-
         <p className="mt-8">
           Now you can press <strong>Inscribe</strong>. It will open OrdinalSafe,
           where you can pay inscription fees and inscribe your collection
           manifest.{" "}
         </p>
-
         <img
           className="p-6 pb-0 mx-auto my-8 border w-96"
           alt="ordinalsafe collection inscription"
           src="/images/ordinal-safe-collection-inscription.png"
         />
-
         <p>
           After finishing the above process, you will get a transaction hash
           next to the Inscribe button. This indicates that your transaction has
           been sent.
         </p>
-
         <img
           alt="collection transaction hash"
           src="/images/collection-tx-hash.png"
           className="p-6 mx-auto my-8 border"
         />
-
         <p>
           By clicking on it, you can see the status of your transaction. In our
           case, it is <strong>Pending</strong>. This indicates that the block
           containing your transaction has yet to be mined. It&#39;s necessary to
           wait until this status updates to <strong>Confirmed</strong>.
         </p>
-
         <div className="flex flex-wrap my-8">
           <img
             alt="transaction pending"
@@ -256,7 +249,6 @@ export default function Inscribe() {
             className="mx-auto border w-80"
           />
         </div>
-
         <p>
           Now one of the protocols servers will find it and store it in the
           database. It usually takes a minute. After that, it will be available
@@ -266,13 +258,11 @@ export default function Inscribe() {
           </a>
           .
         </p>
-
         <img
           alt="og"
           src="/images/og.png"
           className="p-6 mx-auto my-8 border w-96"
         />
-
         <p>
           <strong>
             Congratulations! You just inscribed your first BRC721 collection!
