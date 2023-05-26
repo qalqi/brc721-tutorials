@@ -49,6 +49,25 @@ export default function Inscribe() {
 
   return (
     <div className="mx-auto">
+      <section className="text-">
+        <div className="px-10 py-5 my-8 border border-orange-500">
+          <p>
+            If you appreciate the protocol, you might want to think about
+            minting{" "}
+            <a
+              target="_blank"
+              href={`https://brc721.com/explorer/${COLLECTION_INSCRIPTION_ID}`}
+            >
+              OG tokens
+            </a>{" "}
+            as a way to support further protocol development. Each token holder
+            will be granted an OG role in our Discord upon verification of their
+            token ownership.
+          </p>
+          <a href="#mint">Link to mint</a>
+        </div>
+      </section>
+
       <section>
         {/* <p>
           Translation: <Link href="/chinese">中文</Link>{" "}
@@ -454,21 +473,8 @@ export default function Inscribe() {
         </p>
       </section>
 
-      <section>
+      <section id="mint">
         <h2>OG Mint</h2>
-
-        <p>
-          If you appreciate the protocol, you might want to think about minting{" "}
-          <a
-            target="_blank"
-            href={`https://brc721.com/explorer/${COLLECTION_INSCRIPTION_ID}`}
-          >
-            OG tokens
-          </a>{" "}
-          as a way to support further protocol development. Each token holder
-          will be granted an OG role in our Discord upon verification of their
-          token ownership.
-        </p>
 
         <div className="mt-8">
           {(() => {
