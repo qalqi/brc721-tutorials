@@ -466,7 +466,9 @@ export default function Inscribe() {
               return (
                 <div className="mb-5 text-sm text-gray-500">
                   <div className="mb-1">{`${supply} / ${maxSupply}`}</div>
-                  <div>Max {maxPerAddress} per address</div>
+                  <div className="mb-1">1 mint - 1 OG</div>
+                  <div className="mb-1">Max {maxPerAddress} per address</div>
+                  <div>Price: 75000 sats or ~20$ + fees for a single mint</div>
                 </div>
               );
             }
