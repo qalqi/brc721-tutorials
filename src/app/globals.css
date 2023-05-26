@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Roboto Mono", monospace;
+  @apply leading-loose text-zinc-900;
+}
+
+a {
+  @apply text-orange-500 underline break-all hover:no-underline sm:break-normal;
+}
+
+section {
+  @apply my-14;
+}
+
+h1 {
+  @apply mb-5 text-3xl;
+}
+
+h2 {
+  @apply mb-6 text-xl;
+}
+
+h1,
+h2 {
+  @apply font-bold;
+}
+
+p {
+  @apply my-4;
+}
+
+code {
+  font-size: 0.9rem;
+  @apply block p-6 overflow-auto rounded bg-zinc-100;
+}
+
+li {
+  @apply my-1;
+}
