@@ -176,22 +176,22 @@ export default function Inscribe() {
         <h2>Inscribing collection</h2>
 
         <p>
-          As was mentioned above, the collection manifest is a source of truth
-          for the collection. It is immutable, so it won&apos;t be possible to
-          change it later.
+          As was mentioned above, the collection manifest serves as the single source of truth for the collection. 
+          Its immutable characteristic implies that once it's established, alterations are not possible.
         </p>
 
         <p>
-          The picture below shows that we&apos;ve declared a collection with the
-          OG name and symbol. We&apos;ve specified my wallet as a payment
-          address to receive token payments. We&apos;ve also specified a max
-          supply of 10000 tokens and a max of 5 tokens per address.
+          The image below shows that we have declared a collection with the
+          OG name and symbol. We have specified my wallet as a payment
+          address to receive token payments. 
+          In addition, we have set a maximum supply of 10,000 tokens, 
+          with a limit of 5 tokens per address.
         </p>
 
         <p>
-          You can notice that we&apos;ve left the max block height blank. This
-          is useful for open edition collections when you don&apos;t have a
-          maximum supply but a time limit.
+        You might notice that we've intentionally left the max block height field vacant. 
+        This strategy is particularly beneficial for open edition collections, 
+        where a maximum supply isn't defined but a time constraint is in place.
         </p>
 
         <p>
@@ -219,7 +219,7 @@ export default function Inscribe() {
 
         <p>
           After finishing the above process, you will get a transaction hash
-          next to the Inscribe button. It means that your transaction has been
+          next to the Inscribe button. This indicates that your transaction has been
           sent.
         </p>
 
@@ -231,9 +231,8 @@ export default function Inscribe() {
 
         <p>
           By clicking on it, you can see the status of your transaction. In our
-          case, it is <strong>Pending</strong>. It means that the block with
-          your transaction is still not mined. You have to wait until the this
-          status changes to <strong>Confirmed</strong>.
+          case, it is <strong>Pending</strong>.  This indicates that the block containing your transaction has yet to be mined. 
+          It's necessary to wait until this status updates to <strong>Confirmed</strong>.
         </p>
 
         <div className="flex flex-wrap my-8">
@@ -339,7 +338,7 @@ export default function Inscribe() {
 
         <p>
           When all the first is filled out, we press <strong>Inscribe</strong>{" "}
-          button below the Reveal Manifest form, pay inscription fees, and wait
+          button below the Reveal Manifest form, pay the inscription fees, and wait
           for the transaction to be confirmed.
         </p>
 
