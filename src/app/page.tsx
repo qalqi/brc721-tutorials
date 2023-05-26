@@ -84,8 +84,8 @@ export default function Inscribe() {
           </span>
           The inscription manifest functions similarly to an NFT token. 
           It refers back to the collection manifest. 
-          It includes the initial owner's address and price in sats. 
-          The initial owner's address comes in handy when you have an allowlist, 
+          It includes the initial owner&#39;s address and price in sats. 
+          The initial owner&#39;s address comes in handy when you have an allowlist, 
           and you want to restrict minting to specific addresses.
         </p>
       </section>
@@ -109,7 +109,7 @@ export default function Inscribe() {
 
         <p>
         But what happens if someone attempts to cheat? For instance, 
-        what if someone modifies the inscription price or initial owner's address, 
+        what if someone modifies the inscription price or initial owner&#39;s address, 
         or simply refuses to pay for the NFT?
         </p>
 
@@ -177,7 +177,7 @@ export default function Inscribe() {
 
         <p>
           As was mentioned above, the collection manifest serves as the single source of truth for the collection. 
-          Its immutable characteristic implies that once it's established, alterations are not possible.
+          Its immutable characteristic implies that once it&#39;s established, alterations are not possible.
         </p>
 
         <p>
@@ -189,9 +189,9 @@ export default function Inscribe() {
         </p>
 
         <p>
-        You might notice that we've intentionally left the max block height field vacant. 
+        You might notice that we&#39;ve intentionally left the max block height field vacant. 
         This strategy is particularly beneficial for open edition collections, 
-        where a maximum supply isn't defined but a time constraint is in place.
+        where a maximum supply isn&#39;t defined but a time constraint is in place.
         </p>
 
         <p>
@@ -232,7 +232,7 @@ export default function Inscribe() {
         <p>
           By clicking on it, you can see the status of your transaction. In our
           case, it is <strong>Pending</strong>.  This indicates that the block containing your transaction has yet to be mined. 
-          It's necessary to wait until this status updates to <strong>Confirmed</strong>.
+          It&#39;s necessary to wait until this status updates to <strong>Confirmed</strong>.
         </p>
 
         <div className="flex flex-wrap my-8">
