@@ -39,17 +39,19 @@ export default function Inscribe() {
   return (
     <div className="mx-auto">
       <section>
-        <p>
-          Translation: <Link href="/chinese">Chinese</Link>{" "}
+        {/* <p>
+          Translation: <Link href="/chinese">中文</Link>{" "}
           <Link href="/">English</Link>
-        </p>
+        </p> */}
         <p>
-          Before you take the plunge and deploy your first collection with BRC721, we strongly
-          recommend introducing yourself with the {" "}
+          Before you take the plunge and deploy your first collection with
+          BRC721, we strongly recommend introducing yourself with the{" "}
           <a href="https://www.brc721.com/specification" target="_blank">
             specification.
           </a>{" "}
-          Taking the time to understand the main technical aspects will help build a simple mental model and will significantly improve your understanding of the protocol.{" "}
+          Taking the time to understand the main technical aspects will help
+          build a simple mental model and will significantly improve your
+          understanding of the protocol.{" "}
         </p>
       </section>
       <section>
@@ -57,13 +59,15 @@ export default function Inscribe() {
         The protocol consists of three types of manifests:
         <p>
           <span className="block mb-2 font-medium">📜 Collection Manifest</span>
-          This is the definitive source of information for your collection. It 
-          contains essential data such as max supply, max per address, and max 
-          block height. Consider this manifest as an immutable contract on Ethereum.
+          This is the definitive source of information for your collection. It
+          contains essential data such as max supply, max per address, and max
+          block height. Consider this manifest as an immutable contract on
+          Ethereum.
         </p>
         <p>
           <span className="block mb-2 font-medium">👁️ Reveal Manifest</span>
-          This is a reliable source for your metadata. BRC721 relies on the ERC721{" "}
+          This is a reliable source for your metadata. BRC721 relies on the
+          ERC721{" "}
           <a
             href="https://docs.opensea.io/docs/metadata-standards#metadata-structure"
             target="_blank"
@@ -74,19 +78,20 @@ export default function Inscribe() {
           Similar to ERC721 baseURI and tokenURI properties.
         </p>
         <p>
-        Just like in ERC721, you have the option to update the metadata URL to incorporate a reveal mechanic. 
-        This is achieved by deploying another reveal manifest with a higher priority. 
-        This priority is controlled by the weight field in the manifest.
+          Just like in ERC721, you have the option to update the metadata URL to
+          incorporate a reveal mechanic. This is achieved by deploying another
+          reveal manifest with a higher priority. This priority is controlled by
+          the weight field in the manifest.
         </p>
         <p>
           <span className="block mb-2 font-medium">
             💎 Inscription Manifest
           </span>
-          The inscription manifest functions similarly to an NFT token. 
-          It refers back to the collection manifest. 
-          It includes the initial owner&#39;s address and price in sats. 
-          The initial owner&#39;s address comes in handy when you have an allowlist, 
-          and you want to restrict minting to specific addresses.
+          The inscription manifest functions similarly to an NFT token. It
+          refers back to the collection manifest. It includes the initial
+          owner&#39;s address and price in sats. The initial owner&#39;s address
+          comes in handy when you have an allowlist, and you want to restrict
+          minting to specific addresses.
         </p>
       </section>
 
@@ -94,8 +99,9 @@ export default function Inscribe() {
         <h2>Verification</h2>
 
         <p>
-        How do we guarantee the linked nature of all these manifests and validate the data? 
-        This is where public and private(secret) keys prove vital.
+          How do we guarantee the linked nature of all these manifests and
+          validate the data? This is where public and private(secret) keys prove
+          vital.
         </p>
 
         <p>
@@ -108,18 +114,19 @@ export default function Inscribe() {
         </p>
 
         <p>
-        But what happens if someone attempts to cheat? For instance, 
-        what if someone modifies the inscription price or initial owner&#39;s address,
-        or simply refuses to pay for the NFT?
+          But what happens if someone attempts to cheat? For instance, what if
+          someone modifies the inscription price or initial owner&#39;s address,
+          or simply refuses to pay for the NFT?
         </p>
 
         <p>
-        If the inscription content is altered, the signature becomes invalid, 
-        thus breaching the specification. If the payment is not made, 
-        it constitutes a violation of the specification rules. 
-        Consequently, the inscription will not be verified and included within the collection. 
-        The person who made these changes will be left with a worthless text inscription. 
-        The same outcome awaits anyone trying to mint beyond the allowed limit or if the max supply has been reached.
+          If the inscription content is altered, the signature becomes invalid,
+          thus breaching the specification. If the payment is not made, it
+          constitutes a violation of the specification rules. Consequently, the
+          inscription will not be verified and included within the collection.
+          The person who made these changes will be left with a worthless text
+          inscription. The same outcome awaits anyone trying to mint beyond the
+          allowed limit or if the max supply has been reached.
         </p>
 
         <p className="font-bold">
@@ -176,22 +183,23 @@ export default function Inscribe() {
         <h2>Inscribing collection</h2>
 
         <p>
-          As was mentioned above, the collection manifest serves as the single source of truth for the collection. 
-          Its immutable characteristic implies that once it&#39;s established, alterations are not possible.
+          As was mentioned above, the collection manifest serves as the single
+          source of truth for the collection. Its immutable characteristic
+          implies that once it&#39;s established, alterations are not possible.
         </p>
 
         <p>
-          The image below shows that we have declared a collection with the
-          OG name and symbol. We have specified my wallet as a payment
-          address to receive token payments. 
-          In addition, we have set a maximum supply of 10,000 tokens, 
-          with a limit of 5 tokens per address.
+          The image below shows that we have declared a collection with the OG
+          name and symbol. We have specified my wallet as a payment address to
+          receive token payments. In addition, we have set a maximum supply of
+          10,000 tokens, with a limit of 5 tokens per address.
         </p>
 
         <p>
-        You might notice that we&#39;ve intentionally left the max block height field vacant. 
-        This strategy is particularly beneficial for open edition collections, 
-        where a maximum supply isn&#39;t defined but a time constraint is in place.
+          You might notice that we&#39;ve intentionally left the max block
+          height field vacant. This strategy is particularly beneficial for open
+          edition collections, where a maximum supply isn&#39;t defined but a
+          time constraint is in place.
         </p>
 
         <p>
@@ -219,8 +227,8 @@ export default function Inscribe() {
 
         <p>
           After finishing the above process, you will get a transaction hash
-          next to the Inscribe button. This indicates that your transaction has been
-          sent.
+          next to the Inscribe button. This indicates that your transaction has
+          been sent.
         </p>
 
         <img
@@ -231,8 +239,9 @@ export default function Inscribe() {
 
         <p>
           By clicking on it, you can see the status of your transaction. In our
-          case, it is <strong>Pending</strong>.  This indicates that the block containing your transaction has yet to be mined. 
-          It&#39;s necessary to wait until this status updates to <strong>Confirmed</strong>.
+          case, it is <strong>Pending</strong>. This indicates that the block
+          containing your transaction has yet to be mined. It&#39;s necessary to
+          wait until this status updates to <strong>Confirmed</strong>.
         </p>
 
         <div className="flex flex-wrap my-8">
@@ -338,8 +347,8 @@ export default function Inscribe() {
 
         <p>
           When all the first is filled out, we press <strong>Inscribe</strong>{" "}
-          button below the Reveal Manifest form, pay the inscription fees, and wait
-          for the transaction to be confirmed.
+          button below the Reveal Manifest form, pay the inscription fees, and
+          wait for the transaction to be confirmed.
         </p>
 
         <p>
@@ -390,8 +399,8 @@ export default function Inscribe() {
         </p>
 
         <p>
-          In those cases, you will have to make a manual refund, we are
-          working on a script to fromulate a refund transaction so you can make all
+          In those cases, you will have to make a manual refund, we are working
+          on a script to fromulate a refund transaction so you can make all
           refunds in a few clicks.
         </p>
 
@@ -439,8 +448,8 @@ export default function Inscribe() {
 
         <p>
           {" "}
-          We extend our best wishes for the success of your project and eagerly anticipate 
-          the innovative creations you will build using our protocol.
+          We extend our best wishes for the success of your project and eagerly
+          anticipate the innovative creations you will build using our protocol.
         </p>
       </section>
 
@@ -448,15 +457,16 @@ export default function Inscribe() {
         <h2>OG Mint</h2>
 
         <p>
-        If you appreciate the protocol, you might want to think about minting{" "}
+          If you appreciate the protocol, you might want to think about minting{" "}
           <a
             target="_blank"
             href={`https://brc721.com/explorer/${COLLECTION_INSCRIPTION_ID}`}
           >
             OG tokens
           </a>{" "}
-          as a way to support further protocol development. 
-          Each token holder will be granted an OG role in our Discord upon verification of their token ownership.
+          as a way to support further protocol development. Each token holder
+          will be granted an OG role in our Discord upon verification of their
+          token ownership.
         </p>
 
         <div className="mt-8">

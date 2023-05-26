@@ -39,10 +39,10 @@ export default function Inscribe() {
   return (
     <div className="mx-auto">
       <section>
-        <p>
-          Translation: <Link href="/chinese">Chinese</Link>{" "}
+        {/* <p>
+          Translation: <Link href="/chinese">中文</Link>{" "}
           <Link href="/">English</Link>
-        </p>
+        </p> */}
         <p>
           Before deploying your first collection with BRC721, we recommend
           introducing yourself to the{" "}
