@@ -9,13 +9,15 @@ import {
   useCollection,
 } from "@/hooks/useCollection";
 import * as React from "react";
-import Link from "next/link";
+import { useBalance } from "@/hooks/useBalance";
+import { round } from "@/helpers/round";
 
 export default function Inscribe() {
   const wallet = useOrdinalSafe();
   const data = JSON.stringify(inscription, null, 0);
 
   const collection = useCollection();
+  const balance = useBalance(payee);
 
   React.useEffect(() => {
     // Refetching the collection every 10 seconds to update supply counter
@@ -26,6 +28,15 @@ export default function Inscribe() {
       return () => clearInterval(interval);
     }
   }, [collection]);
+
+  React.useEffect(() => {
+    if (balance.isSuccess) {
+      const interval = setInterval(() => {
+        balance.refetch();
+      }, 5_000);
+      return () => clearInterval(interval);
+    }
+  }, [balance]);
 
   const inscribe = () => {
     wallet.inscribeItem({
@@ -462,10 +473,14 @@ export default function Inscribe() {
         <div className="mt-8">
           {(() => {
             if (collection.isSuccess) {
-              const { supply, maxSupply, maxPerAddress } = collection.data;
+              const { maxSupply, maxPerAddress } = collection.data;
               return (
                 <div className="mb-5 text-sm text-gray-500">
-                  <div className="mb-1">{`${supply} / ${maxSupply}`}</div>
+                  {balance.isSuccess ? (
+                    <div className="mb-1">{`~${round(
+                      balance.data / 75000
+                    )} / ${maxSupply}`}</div>
+                  ) : null}
                   <div className="mb-1">1 mint - 1 OG</div>
                   <div className="mb-1">Max {maxPerAddress} per address</div>
                   <div>Price: 75000 sats or ~20$ + fees for a single mint</div>
@@ -497,12 +512,15 @@ export default function Inscribe() {
             }
 
             if (wallet.initialization.isSuccess) {
+              const outOfSupply =
+                balance.isSuccess && round(balance.data / 75000) >= 10000;
+
               return (
                 <Button
                   onClick={inscribe}
-                  disabled={wallet.inscriptionManifest.isLoading}
+                  disabled={wallet.inscriptionManifest.isLoading || outOfSupply}
                 >
-                  Mint OG token
+                  {outOfSupply ? "Out of supply" : "Mint OG token"}
                 </Button>
               );
             }
