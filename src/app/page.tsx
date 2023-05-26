@@ -45,7 +45,7 @@ export default function Inscribe() {
         </p>
         <p>
           Before you take the plunge and deploy your first collection with BRC721, we strongly
-          recommend familiarizing yourself with the {" "}
+          recommend introducing yourself with the {" "}
           <a href="https://www.brc721.com/specification" target="_blank">
             specification
           </a>{" "}. 
