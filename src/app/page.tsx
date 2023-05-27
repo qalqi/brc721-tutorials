@@ -476,7 +476,7 @@ export default function Inscribe() {
       <section id="mint">
         <h2>OG Mint</h2>
 
-        <div className="mt-8">
+        {/* <div className="mt-8">
           {(() => {
             if (collection.isSuccess) {
               const { maxSupply, maxPerAddress } = collection.data;
@@ -527,7 +527,7 @@ export default function Inscribe() {
               );
             }
           })()}
-        </div>
+        </div> */}
       </section>
     </div>
   );
