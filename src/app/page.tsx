@@ -482,11 +482,7 @@ export default function Inscribe() {
               const { maxSupply, maxPerAddress } = collection.data;
               return (
                 <div className="mb-5 text-sm text-gray-500">
-                  {balance.isSuccess ? (
-                    <div className="mb-1">{`~${round(
-                      balance.data / 75000
-                    )} / ${maxSupply}`}</div>
-                  ) : null}
+                  <div>Out of supply</div>
                   <div className="mb-1">1 mint - 1 OG</div>
                   <div className="mb-1">Max {maxPerAddress} per address</div>
                   <div>Price: 75000 sats or ~20$ + fees for a single mint</div>
