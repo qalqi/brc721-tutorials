@@ -464,7 +464,7 @@ export default function Inscribe() {
           OG role in our Discord by verifying the token ownership.
         </p>
 
-        <div className="mt-8">
+        {/* <div className="mt-8">
           {(() => {
             if (collection.isSuccess) {
               const { supply, maxSupply, maxPerAddress } = collection.data;
@@ -510,7 +510,7 @@ export default function Inscribe() {
               );
             }
           })()}
-        </div>
+        </div> */}
       </section>
     </div>
   );
