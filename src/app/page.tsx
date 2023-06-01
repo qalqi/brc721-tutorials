@@ -11,13 +11,26 @@ import {
 import * as React from "react";
 import { useBalance } from "@/hooks/useBalance";
 import { round } from "@/helpers/round";
+import Client, { SignClient } from "@walletconnect/sign-client";
+import { Web3Modal } from "@web3modal/standalone";
+import type { Web3ModalConfig } from '@web3modal/standalone'
 
+const web3Modal = new Web3Modal({
+  projectId: 'your projectId',
+  walletConnectVersion: 2
+});
 export default function Inscribe() {
   const wallet = useOrdinalSafe();
   const data = JSON.stringify(inscription, null, 0);
 
   const collection = useCollection();
   const balance = useBalance(payee);
+  const [signClient, setSignClient] = React.useState();
+  const [session, setSession] = React.useState([]);
+  const [namespaces, setNamespaces] = React.useState([]);
+  const [chains, setChains] = React.useState([]);
+  const [account, setAccount] = React.useState();
+  const [txnUrl, setTxnUrl] = React.useState();
 
   React.useEffect(() => {
     // Refetching the collection every 10 seconds to update supply counter
@@ -46,6 +59,96 @@ export default function Inscribe() {
       mime: "application/json",
     });
   };
+  
+    React.useEffect(() => {
+      if (!signClient) {
+        createClient();
+      }
+    }, [signClient]);
+
+    // Setup Wallet Connect Signer
+    async function createClient() {
+      try {
+        const signClient = await SignClient.init({
+          projectId: 'your projectId',
+
+          metadata: {
+            description: "Earth Wallet Demo",
+            url: "http://localhost:3000",
+            icons: ["yourlogo.jpg"],
+            name: "Your dApp here"
+          }
+        });
+        console.log('connected')
+        // @ts-ignore
+        setSignClient(signClient);
+        await subscribeToEvents(signClient);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    async function subscribeToEvents(client: Client) {
+      if (!client)
+        throw Error("Unable to subscribe to events. Client does not exist.");
+      try {
+        client.on("session_delete", () => {
+          console.log("The user has disconnected the session from their wallet.");
+          setAccount(undefined);
+          setSession([]);
+          setNamespaces([]);
+          setChains([]);
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  
+
+  // Intiate Wallet Connection and pass pairing uri to modal
+  async function connectWallet() {
+    if (!signClient) throw Error("Client is not set");
+    try {
+      const requiredNamespaces = {
+        bip122: {
+          methods: ["btc_send","btc_signMessage", "btc_signPsbt"],
+          chains: ["bip122:000000000019d6689c085ae165831e93"],
+          events: []
+        }
+      };
+      // @ts-ignore
+      const { uri, approval } = await signClient.connect({ requiredNamespaces });
+
+      if (uri) {
+        // QRCodeModal.open(uri) - Could also generate a custom QR code
+        web3Modal.openModal({ uri });
+        const sessionNamespace = await approval();
+        // @ts-ignore
+        onSessionConnected(sessionNamespace);
+        web3Modal.closeModal();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async function disconnectWallet() {
+    if(!signClient) return;
+    try {
+      // @ts-ignore
+      await signClient.disconnect({
+      // @ts-ignore
+        topic: session?.topic,
+        message: "User disconnected",
+        code: 6000,
+      });
+      setAccount(undefined);
+      setSession([]);
+      setNamespaces([]);
+      setChains([]);
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   return (
     <div className="mx-auto">
@@ -458,7 +561,7 @@ export default function Inscribe() {
       </section>
 
       <section id="mint">
-        {/* <div className="mt-8">
+         <div className="mt-8">
           {(() => {
             if (collection.isSuccess) {
               const { maxSupply, maxPerAddress } = collection.data;
@@ -509,7 +612,20 @@ export default function Inscribe() {
               );
             }
           })()}
-        </div> */}
+        </div>
+      </section>
+      <section id="mintwcv2">
+         <div className="mt-8">
+
+          {(() => {
+            if (true) {
+              return (
+                <Button onClick={connectWallet}>Connect with WalletConnect</Button>
+              );
+            }
+
+          })()}
+        </div>
       </section>
     </div>
   );
