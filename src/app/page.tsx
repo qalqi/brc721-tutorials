@@ -13,12 +13,19 @@ import { useBalance } from "@/hooks/useBalance";
 import { round } from "@/helpers/round";
 import Client, { SignClient } from "@walletconnect/sign-client";
 import { Web3Modal } from "@web3modal/standalone";
-import type { Web3ModalConfig } from '@web3modal/standalone'
+import type { Web3ModalConfig } from "@web3modal/standalone";
 
+interface keyable {
+  [key: string]: any;
+}
 const web3Modal = new Web3Modal({
-  projectId: 'your projectId',
-  walletConnectVersion: 2
+  projectId: "5a9fd92ce23a58d83e5f881d1a8ef28c",
+  walletConnectVersion: 2,
 });
+const getAddress = (accountString:string) => {
+  const parts = accountString.split(':');
+  return parts.length === 3 ? parts[2] : null;
+};
 export default function Inscribe() {
   const wallet = useOrdinalSafe();
   const data = JSON.stringify(inscription, null, 0);
@@ -26,12 +33,12 @@ export default function Inscribe() {
   const collection = useCollection();
   const balance = useBalance(payee);
   const [signClient, setSignClient] = React.useState();
-  const [session, setSession] = React.useState([]);
+  const [session, setSession] = React.useState<keyable>([]);
   const [namespaces, setNamespaces] = React.useState([]);
-  const [chains, setChains] = React.useState([]);
+  const [chains, setChains] = React.useState<string[]>([]);
   const [account, setAccount] = React.useState();
   const [txnUrl, setTxnUrl] = React.useState();
-
+  console.log("account", account);
   React.useEffect(() => {
     // Refetching the collection every 10 seconds to update supply counter
     if (collection.isSuccess) {
@@ -59,50 +66,72 @@ export default function Inscribe() {
       mime: "application/json",
     });
   };
-  
-    React.useEffect(() => {
-      if (!signClient) {
-        createClient();
-      }
-    }, [signClient]);
 
-    // Setup Wallet Connect Signer
-    async function createClient() {
-      try {
-        const signClient = await SignClient.init({
-          projectId: 'your projectId',
+  React.useEffect(() => {
+    if (!signClient) {
+      createClient();
+    }
+  }, [signClient]);
 
-          metadata: {
-            description: "Earth Wallet Demo",
-            url: "http://localhost:3000",
-            icons: ["yourlogo.jpg"],
-            name: "Your dApp here"
-          }
-        });
-        console.log('connected')
-        // @ts-ignore
-        setSignClient(signClient);
-        await subscribeToEvents(signClient);
-      } catch (e) {
-        console.log(e);
+  // Setup Wallet Connect Signer
+  async function createClient() {
+    try {
+      const signClient = await SignClient.init({
+        projectId: "5a9fd92ce23a58d83e5f881d1a8ef28c",
+
+        metadata: {
+          description: "Earth Wallet Demo",
+          url: "http://localhost:3000",
+          icons: ["yourlogo.jpg"],
+          name: "Your dApp here",
+        },
+      });
+      console.log("connected", signClient.session.length);
+      if (signClient.session.length) {
+        const lastKeyIndex = signClient.session.keys.length - 1;
+        const _session = signClient.session.get(
+          signClient.session.keys[lastKeyIndex]
+        );
+        console.log("RESTORED SESSION:", _session);
+        onSessionConnected(_session)
+        //parseSession(_session)
+
       }
+      // @ts-ignore
+      setSignClient(signClient);
+      await subscribeToEvents(signClient);
+    } catch (e) {
+      console.log(e);
     }
-    async function subscribeToEvents(client: Client) {
-      if (!client)
-        throw Error("Unable to subscribe to events. Client does not exist.");
-      try {
-        client.on("session_delete", () => {
-          console.log("The user has disconnected the session from their wallet.");
-          setAccount(undefined);
-          setSession([]);
-          setNamespaces([]);
-          setChains([]);
-        });
-      } catch (e) {
-        console.log(e);
-      }
+  }
+  const onSessionConnected = (session: keyable) => {
+    console.log("Established Session:", session);
+    // setSession(session)
+    setSession(session);
+
+    const allNamespaceAccounts = Object.values(session.namespaces)
+      // @ts-ignore
+      .map((namespace) => namespace.accounts)
+      .flat();
+    setAccount(allNamespaceAccounts[0]);
+    const allNamespaceChains = Object.keys(session.namespaces);
+    setChains(allNamespaceChains);
+  };
+  async function subscribeToEvents(client: Client) {
+    if (!client)
+      throw Error("Unable to subscribe to events. Client does not exist.");
+    try {
+      client.on("session_delete", () => {
+        console.log("The user has disconnected the session from their wallet.");
+        setAccount(undefined);
+        setSession([]);
+        setNamespaces([]);
+        setChains([]);
+      });
+    } catch (e) {
+      console.log(e);
     }
-  
+  }
 
   // Intiate Wallet Connection and pass pairing uri to modal
   async function connectWallet() {
@@ -110,13 +139,15 @@ export default function Inscribe() {
     try {
       const requiredNamespaces = {
         bip122: {
-          methods: ["btc_send","btc_signMessage", "btc_signPsbt"],
+          methods: ["btc_send", "btc_signMessage", "btc_signPsbt"],
           chains: ["bip122:000000000019d6689c085ae165831e93"],
-          events: []
-        }
+          events: [],
+        },
       };
       // @ts-ignore
-      const { uri, approval } = await signClient.connect({ requiredNamespaces });
+      const { uri, approval } = await signClient.connect({
+        requiredNamespaces,
+      });
 
       if (uri) {
         // QRCodeModal.open(uri) - Could also generate a custom QR code
@@ -132,11 +163,11 @@ export default function Inscribe() {
   }
 
   async function disconnectWallet() {
-    if(!signClient) return;
+    if (!signClient) return;
     try {
       // @ts-ignore
       await signClient.disconnect({
-      // @ts-ignore
+        // @ts-ignore
         topic: session?.topic,
         message: "User disconnected",
         code: 6000,
@@ -257,8 +288,9 @@ export default function Inscribe() {
             <a href="https://ordinalsafe.xyz/" target="_blank">
               OrdinalSafe wallet
             </a>{" "}
-            with  atleast 40000 SATS (0.0004BTC) It is the only wallet that supports BRC-721 at this
-            moment, more intergrations are in the pipeline.
+            with atleast 40000 SATS (0.0004BTC) It is the only wallet that
+            supports BRC-721 at this moment, more intergrations are in the
+            pipeline.
           </li>
 
           <li>
@@ -296,9 +328,9 @@ export default function Inscribe() {
       <section>
         <h2>Inscribing collection</h2>
         <p>
-          As previously highlighted, the collection manifest operates as the 
-          single source of truth for the collection. Its immutable nature signifies 
-          that it can&#39;t be modified once it has been created.
+          As previously highlighted, the collection manifest operates as the
+          single source of truth for the collection. Its immutable nature
+          signifies that it can&#39;t be modified once it has been created.
         </p>
         <p>
           The image below shows that we have declared a collection with the OG
@@ -311,9 +343,9 @@ export default function Inscribe() {
           to avoid duplicates.
         </b>{" "}
         <p>
-        We have deliberately left the maximum block height field unfilled. 
-        This method is suitable for open edition collections, where a defined 
-        maximum supply is absent, but a time constraint exists.
+          We have deliberately left the maximum block height field unfilled.
+          This method is suitable for open edition collections, where a defined
+          maximum supply is absent, but a time constraint exists.
         </p>
         <p>
           The <strong>Signer Public Key</strong> field was populated
@@ -388,10 +420,10 @@ export default function Inscribe() {
       <section>
         <h2>Inscribing metadata</h2>
         <p>
-        Before users are allowed to mint tokens, we would like to display a placeholder 
-        for the token&apos;s metadata. Once the minting process is completed and all tokens 
-        have been purchased, we will replace this placeholder with the actual metadata, 
-        including various attributes. 
+          Before users are allowed to mint tokens, we would like to display a
+          placeholder for the token&apos;s metadata. Once the minting process is
+          completed and all tokens have been purchased, we will replace this
+          placeholder with the actual metadata, including various attributes.
         </p>
 
         <p>
@@ -514,7 +546,7 @@ export default function Inscribe() {
         />
 
         <p>
-          For public mint, you don&apos;t want to inscribe youself but{" "} instead 
+          For public mint, you don&apos;t want to inscribe youself but instead
           <strong> Download</strong>&nbsp;the inscription file and share it with
           your community or submit it to a BRC721 community marketplace.
         </p>
@@ -524,8 +556,9 @@ export default function Inscribe() {
           <a href="https://www.brc721.com/inscribe" target="_blank">
             Inscribe
           </a>{" "}
-          page or you can build your personal mint website. We plan to opensource a
-          minting button so that you can use this code as a starting point.
+          page or you can build your personal mint website. We plan to
+          opensource a minting button so that you can use this code as a
+          starting point.
         </p>
 
         <p>
@@ -550,18 +583,18 @@ export default function Inscribe() {
 
         <p>
           {" "}
-          We are excited for the success of your project and eagerly
-          anticipate the innovative creations you will build using our protocol. Please join us in our {" "}
+          We are excited for the success of your project and eagerly anticipate
+          the innovative creations you will build using our protocol. Please
+          join us in our{" "}
           <a href="https://discord.com/invite/brc721" target="_blank">
             Discord
           </a>{" "}
-          discord to discuss 
-          the project in greater detail 
+          discord to discuss the project in greater detail
         </p>
       </section>
 
       <section id="mint">
-         <div className="mt-8">
+        <div className="mt-8">
           {(() => {
             if (collection.isSuccess) {
               const { maxSupply, maxPerAddress } = collection.data;
@@ -615,15 +648,25 @@ export default function Inscribe() {
         </div>
       </section>
       <section id="mintwcv2">
-         <div className="mt-8">
-
+        <div className="mt-8">
           {(() => {
-            if (true) {
+            if (!account) {
               return (
-                <Button onClick={connectWallet}>Connect with WalletConnect</Button>
+                <Button onClick={connectWallet}>
+                  Connect with WalletConnect
+                </Button>
               );
             }
-
+            else {
+              return (
+                <div>
+                  Connected with {getAddress(account)}
+                <Button onClick={connectWallet}>
+                  Sign
+                </Button>
+                </div>
+              );
+            }
           })()}
         </div>
       </section>
