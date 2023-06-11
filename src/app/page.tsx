@@ -34,12 +34,12 @@ export default function Inscribe() {
 
   const collection = useCollection();
   const balance = useBalance(payee);
+
   const [signClient, setSignClient] = React.useState<ISignClient>();
   const [session, setSession] = React.useState<keyable>([]);
-  const [namespaces, setNamespaces] = React.useState([]);
-  const [chains, setChains] = React.useState<string[]>([]);
   const [account, setAccount] = React.useState<undefined | string>();
   const [txnObj, setTxnObj] = React.useState<keyable>({});
+
   console.log("account", account);
   React.useEffect(() => {
     // Refetching the collection every 10 seconds to update supply counter
@@ -68,6 +68,7 @@ export default function Inscribe() {
       mime: "application/json",
     });
   };
+
   const earthInscribe = async () => {
     if (!signClient || !account)
       throw Error("No sign client or No Selected Account found");
@@ -86,7 +87,6 @@ export default function Inscribe() {
       websiteFee,
       inscriptionReceiver,
     };
-    //if (!account.length) throw Error("No account found");
     try {
       const result: keyable = await signClient.request({
         topic: session.topic,
@@ -98,7 +98,7 @@ export default function Inscribe() {
       });
       setTxnObj(result);
     } catch (e) {
-      //console.log(e);
+      console.log(e);
     }
   };
 
@@ -113,16 +113,16 @@ export default function Inscribe() {
     try {
       const signClient = await SignClient.init({
         projectId: "5a9fd92ce23a58d83e5f881d1a8ef28c",
-
         metadata: {
-          description: "Earth Wallet Demo",
+          description: "BRC 721 Demo",
           url: "http://localhost:3000",
           icons: ["yourlogo.jpg"],
           name: "Your dApp here",
         },
       });
-      console.log("connected", signClient.session.length);
-      if (signClient.session.length) {
+      
+       if (signClient.session.length) {
+        // Restore last session
         const lastKeyIndex = signClient.session.keys.length - 1;
         const _session = signClient.session.get(
           signClient.session.keys[lastKeyIndex]
@@ -137,6 +137,7 @@ export default function Inscribe() {
       console.log(e);
     }
   }
+
   const onSessionConnected = (session: SessionTypes.Struct) => {
     console.log("Established Session:", session);
     // setSession(session)
@@ -148,10 +149,9 @@ export default function Inscribe() {
     if (allNamespaceAccounts.length === 0) return;
     else {
       setAccount(allNamespaceAccounts[0]);
-      const allNamespaceChains = Object.keys(session.namespaces);
-      setChains(allNamespaceChains);
     }
   };
+  
   async function subscribeToEvents(client: Client) {
     if (!client)
       throw Error("Unable to subscribe to events. Client does not exist.");
@@ -160,8 +160,6 @@ export default function Inscribe() {
         console.log("The user has disconnected the session from their wallet.");
         setAccount(undefined);
         setSession([]);
-        setNamespaces([]);
-        setChains([]);
       });
     } catch (e) {
       console.log(e);
@@ -174,7 +172,12 @@ export default function Inscribe() {
     try {
       const requiredNamespaces = {
         bip122: {
-          methods: ["btc_send", "btc_signMessage", "btc_signPsbt", "btc_inscribe"],
+          methods: [
+            "btc_send",
+            "btc_signMessage",
+            "btc_signPsbt",
+            "btc_inscribe",
+          ],
           chains: ["bip122:000000000019d6689c085ae165831e93"],
           events: [],
         },
@@ -204,8 +207,6 @@ export default function Inscribe() {
       });
       setAccount(undefined);
       setSession([]);
-      setNamespaces([]);
-      setChains([]);
     } catch (e) {
       console.log(e);
     }
