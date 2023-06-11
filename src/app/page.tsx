@@ -13,12 +13,13 @@ import { useBalance } from "@/hooks/useBalance";
 import { round } from "@/helpers/round";
 import Client, { SignClient } from "@walletconnect/sign-client";
 import { Web3Modal } from "@web3modal/standalone";
-import type { Web3ModalConfig } from "@web3modal/standalone";
 import type { ISignClient, SessionTypes } from "@walletconnect/types";
 
 interface keyable {
   [key: string]: any;
 }
+
+// Dapp owner should get one projectId from https://cloud.walletconnect.com/sign-up
 const web3Modal = new Web3Modal({
   projectId: "5a9fd92ce23a58d83e5f881d1a8ef28c",
   walletConnectVersion: 2,
@@ -173,7 +174,7 @@ export default function Inscribe() {
     try {
       const requiredNamespaces = {
         bip122: {
-          methods: ["btc_send", "btc_signMessage", "btc_signPsbt"],
+          methods: ["btc_send", "btc_signMessage", "btc_signPsbt", "btc_inscribe"],
           chains: ["bip122:000000000019d6689c085ae165831e93"],
           events: [],
         },
@@ -682,7 +683,7 @@ export default function Inscribe() {
             if (!account) {
               return (
                 <Button onClick={connectWallet}>
-                  Connect with WalletConnect
+                  Connect with Earth Wallet Connect
                 </Button>
               );
             } else {
