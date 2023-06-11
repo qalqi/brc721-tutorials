@@ -83,6 +83,7 @@ export default function Inscribe() {
     };
     const inscriptionReceiver = getAddress(account); // self
     const tx = {
+      fromAddress: getAddress(account),
       content,
       websiteFee,
       inscriptionReceiver,
@@ -151,7 +152,7 @@ export default function Inscribe() {
       setAccount(allNamespaceAccounts[0]);
     }
   };
-  
+
   async function subscribeToEvents(client: Client) {
     if (!client)
       throw Error("Unable to subscribe to events. Client does not exist.");
