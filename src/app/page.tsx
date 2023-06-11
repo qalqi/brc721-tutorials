@@ -78,8 +78,8 @@ export default function Inscribe() {
       mime: "application/json",
     };
     const websiteFee = {
-      websiteFeeInSats: payee,
-      websiteFeeReceiver: 75000,
+      websiteFeeInSats: 75000,
+      websiteFeeReceiver: payee,
     };
     const inscriptionReceiver = getAddress(account); // self
     const tx = {
