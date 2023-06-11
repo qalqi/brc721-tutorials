@@ -14,6 +14,7 @@ import { round } from "@/helpers/round";
 import Client, { SignClient } from "@walletconnect/sign-client";
 import { Web3Modal } from "@web3modal/standalone";
 import type { Web3ModalConfig } from "@web3modal/standalone";
+import type { ISignClient, SessionTypes } from "@walletconnect/types";
 
 interface keyable {
   [key: string]: any;
@@ -22,8 +23,8 @@ const web3Modal = new Web3Modal({
   projectId: "5a9fd92ce23a58d83e5f881d1a8ef28c",
   walletConnectVersion: 2,
 });
-const getAddress = (accountString:string) => {
-  const parts = accountString.split(':');
+const getAddress = (accountString: string) => {
+  const parts = accountString.split(":");
   return parts.length === 3 ? parts[2] : null;
 };
 export default function Inscribe() {
@@ -32,12 +33,12 @@ export default function Inscribe() {
 
   const collection = useCollection();
   const balance = useBalance(payee);
-  const [signClient, setSignClient] = React.useState();
+  const [signClient, setSignClient] = React.useState<ISignClient>();
   const [session, setSession] = React.useState<keyable>([]);
   const [namespaces, setNamespaces] = React.useState([]);
   const [chains, setChains] = React.useState<string[]>([]);
-  const [account, setAccount] = React.useState();
-  const [txnUrl, setTxnUrl] = React.useState();
+  const [account, setAccount] = React.useState<undefined | string>();
+  const [txnObj, setTxnObj] = React.useState<keyable>({});
   console.log("account", account);
   React.useEffect(() => {
     // Refetching the collection every 10 seconds to update supply counter
@@ -66,6 +67,39 @@ export default function Inscribe() {
       mime: "application/json",
     });
   };
+  const earthInscribe = async () => {
+    if (!signClient || !account)
+      throw Error("No sign client or No Selected Account found");
+
+    const content = {
+      data: data,
+      mime: "application/json",
+    };
+    const websiteFee = {
+      websiteFeeInSats: payee,
+      websiteFeeReceiver: 75000,
+    };
+    const inscriptionReceiver = getAddress(account); // self
+    const tx = {
+      content,
+      websiteFee,
+      inscriptionReceiver,
+    };
+    //if (!account.length) throw Error("No account found");
+    try {
+      const result: keyable = await signClient.request({
+        topic: session.topic,
+        chainId: "bip122:000000000019d6689c085ae165831e93",
+        request: {
+          method: "btc_inscribe",
+          params: tx,
+        },
+      });
+      setTxnObj(result);
+    } catch (e) {
+      //console.log(e);
+    }
+  };
 
   React.useEffect(() => {
     if (!signClient) {
@@ -93,29 +127,29 @@ export default function Inscribe() {
           signClient.session.keys[lastKeyIndex]
         );
         console.log("RESTORED SESSION:", _session);
-        onSessionConnected(_session)
+        onSessionConnected(_session);
         //parseSession(_session)
-
       }
-      // @ts-ignore
       setSignClient(signClient);
       await subscribeToEvents(signClient);
     } catch (e) {
       console.log(e);
     }
   }
-  const onSessionConnected = (session: keyable) => {
+  const onSessionConnected = (session: SessionTypes.Struct) => {
     console.log("Established Session:", session);
     // setSession(session)
     setSession(session);
 
     const allNamespaceAccounts = Object.values(session.namespaces)
-      // @ts-ignore
-      .map((namespace) => namespace.accounts)
+      .map((namespace) => namespace?.accounts)
       .flat();
-    setAccount(allNamespaceAccounts[0]);
-    const allNamespaceChains = Object.keys(session.namespaces);
-    setChains(allNamespaceChains);
+    if (allNamespaceAccounts.length === 0) return;
+    else {
+      setAccount(allNamespaceAccounts[0]);
+      const allNamespaceChains = Object.keys(session.namespaces);
+      setChains(allNamespaceChains);
+    }
   };
   async function subscribeToEvents(client: Client) {
     if (!client)
@@ -144,7 +178,6 @@ export default function Inscribe() {
           events: [],
         },
       };
-      // @ts-ignore
       const { uri, approval } = await signClient.connect({
         requiredNamespaces,
       });
@@ -152,8 +185,7 @@ export default function Inscribe() {
       if (uri) {
         // QRCodeModal.open(uri) - Could also generate a custom QR code
         web3Modal.openModal({ uri });
-        const sessionNamespace = await approval();
-        // @ts-ignore
+        const sessionNamespace: SessionTypes.Struct = await approval();
         onSessionConnected(sessionNamespace);
         web3Modal.closeModal();
       }
@@ -165,12 +197,9 @@ export default function Inscribe() {
   async function disconnectWallet() {
     if (!signClient) return;
     try {
-      // @ts-ignore
       await signClient.disconnect({
-        // @ts-ignore
         topic: session?.topic,
-        message: "User disconnected",
-        code: 6000,
+        reason: { message: "User disconnected", code: 6000 },
       });
       setAccount(undefined);
       setSession([]);
@@ -656,14 +685,11 @@ export default function Inscribe() {
                   Connect with WalletConnect
                 </Button>
               );
-            }
-            else {
+            } else {
               return (
                 <div>
-                  Connected with {getAddress(account)}
-                <Button onClick={connectWallet}>
-                  Sign
-                </Button>
+                  <div>Connected with {getAddress(account)}</div>
+                  <Button onClick={earthInscribe}>Mint OG Token</Button>
                 </div>
               );
             }
